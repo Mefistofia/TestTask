@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title> Test Programm </title>
+    <!-- В данной программе я использую 2 api для генерации на основе сайта https://www.random.org/integers/ -->
+    <script src="CreateAPI.js"></script>
+    <script src="RandomOrgAPI.js"></script>
+</head>
+<body>
+<p>
+    <script>
+       // Т.к. за один раз сайт может сгенирировать лишь 10тыс. значений, а по заданию необходимо 1 миллион, необходимо несколько функций
+	   
+        var numbers = [];
+
+        function getMillionRecords() { //Конкретно эта функция позваляет получить 1 миллион значений
+
+            function getRandomRecords() { // отвечает за генерацию максимального количества чисел и перемещение их в массив
+
+                RandomOrgAPI.integers({min: 0, max: 1, num: 10000}
+                    , function (result) {
+                        result.forEach((x) => {
+                            numbers.push(x);
+                        });
+                    });
+
+            };
+
+            function myLoop(i) { //цикл которой позволяет получить нужное количество данных
+
+                setTimeout( // Я использую в данном случае задержку, потому что есть ограничение на количество запросов в единицу времени 
+                    () => {
+                        if (i < 2) {
+                            getRandomRecords();
+                            i++;
+                            myLoop(i);
+                        } else {
+                            doEval(numbers);
+                        }
+                    }
+                    , 500
+                );
+
+            }
+
+            var i = 0;
+            getRandomRecords(); // Это позволяет сэкономить 0,5 сек, потому что мы получим данные без задержки :) 
+            myLoop(i);
+
+        }
+
+        function doEval(numbers) {
+
+            function countFirst(arrNumbers) { //Первое задание
+
+                var zeroRecords = 0;
+                var oneRecords = 0;
+
+                for (var i = 0; i < arrNumbers.length; i++) { //подсчет количества
+                    if (arrNumbers[i] == 0) {
+                        zeroRecords++;
+                    } else {
+                        oneRecords++;
+                    }
+                }
+
+                percZero = (100 * zeroRecords) / arrNumbers.length; //подсчет процентов
+                percOne = (100 * oneRecords) / arrNumbers.length;
+
+                alert('Процент числа 1 составляет: ' + percOne + '%, соответсвенно у 0 - ' + percZero + '%');
+
+            }
+
+            function countSecond(arrNumbers) { //Второе задание
+
+                var myArrSec = [0, 0, 0, 0]; //создала массив, элементы которого буду отображать сколько раз встретилась комбинация, а индекс - комбинацию
+                for (var i = 0; i < (arrNumbers.length - 1); i++) {
+                    idx = arrNumbers[i] * 2 + arrNumbers[i + 1] * 1; //берем 2 элемента и переводим в 10-ий код 
+                    myArrSec[idx]++;
+                }
+
+                percZrComb = (100 * myArrSec[0]) / arrNumbers.length; //подсчитываем процент
+                percFrComb = (100 * myArrSec[1]) / arrNumbers.length;
+                percScComb = (100 * myArrSec[2]) / arrNumbers.length;
+                percThComb = (100 * myArrSec[3]) / arrNumbers.length;
+                alert('Процент комбинанаций составляет: \n00 - ' + percZrComb + '%\n'
+                    + '01 - ' + percFrComb + '%\n'
+                    + '10 - ' + percScComb + '%\n'
+                    + '11 - ' + percThComb + '%');
+
+            }
+
+            function countThird(arrNumbers) {
+
+                var myArrTh = [0, 0, 0, 0, 0, 0, 0, 0];
+                for (var i = 0; i < (arrNumbers.length - 2); i++) {
+                    idx = arrNumbers[i] * 4 + arrNumbers[i + 1] * 2 + arrNumbers[i + 2] * 1;
+                    myArrTh[idx]++;
+                }
+
+                percZeroComb = (100 * myArrTh[0]) / arrNumbers.length;
+                percOneComb = (100 * myArrTh[1]) / arrNumbers.length;
+                percTwoComb = (100 * myArrTh[2]) / arrNumbers.length;
+                percThreeComb = (100 * myArrTh[3]) / arrNumbers.length;
+                percFourComb = (100 * myArrTh[4]) / arrNumbers.length;
+                percFiveComb = (100 * myArrTh[5]) / arrNumbers.length;
+                percSixComb = (100 * myArrTh[6]) / arrNumbers.length;
+                percSevenComb = (100 * myArrTh[7]) / arrNumbers.length;
+
+                alert('Процент комбинанаций составляет: \n000 - ' + percZeroComb + '%\n'
+                    + '001 - ' + percOneComb + '%\n'
+                    + '010 - ' + percTwoComb + '%\n'
+                    + '100 - ' + percThreeComb + '%\n'
+                    + '101 - ' + percFourComb + '%\n'
+                    + '110 - ' + percFiveComb + '%\n'
+                    + '011 - ' + percSixComb + '%\n'
+                    + '111 - ' + percSevenComb + '%');
+
+            }
+
+            var arrNumbers = numbers;
+
+            countFirst(arrNumbers);
+            countSecond(arrNumbers);
+            countThird(arrNumbers);
+
+        }
+
+        getMillionRecords();
+
+    </script>
+</p>
+</body>
+</html>
